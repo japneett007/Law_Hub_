@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawHub - Integrated Legal Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #1a1a1a; color: #ffffff; font-family: 'Inter', sans-serif; }
+        .sidebar { background-color: #000000; }
+        .card { background-color: #2c2c2c; }
+        .btn-primary { background-color: #FF9900; color: #000000; font-weight: 700; }
+        .btn-secondary { background-color: #2c2c2c; color: #ffffff; }
+        .chat-bubble-user { background-color: #FF9900; color: #000000; }
+        .chat-bubble-bot { background-color: #2c2c2c; }
+        .nav-item { color: #a0a0a0; transition: all 0.2s ease-in-out; }
+        .nav-item:hover, .nav-item.active { background-color: #2c2c2c; color: #FF9900; border-left: 3px solid #FF9900; }
+        .nav-item.active { font-weight: 600; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 153, 0, 0.2); }
+        .card { transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <nav class="sidebar w-64 flex-shrink-0 p-4 flex flex-col">
+            <div class="flex items-center mb-8">
+                <span class="text-xl font-bold text-white">LawHub</span>
+            </div>
+            <ul class="space-y-2 flex-grow">
+                <li><a href="#" class="nav-item active flex items-center p-3 rounded-lg" data-target="dashboard-view">
+                    <span class="mr-3">🏠</span> Dashboard
+                </a></li>
+                <li><a href="#" class="nav-item flex items-center p-3 rounded-lg" data-target="chat-view">
+                    <span class="mr-3">💬</span> Legal Q&A
+                </a></li>
+                <li><a href="#" class="nav-item flex items-center p-3 rounded-lg" data-target="laws-view">
+                    <span class="mr-3">📚</span> Laws Explorer
+                </a></li>
+                <li><a href="#" class="nav-item flex items-center p-3 rounded-lg" data-target="ocr-view">
+                    <span class="mr-3">📄</span> Document Analysis
+                </a></li>
+                <li><a href="#" class="nav-item flex items-center p-3 rounded-lg" data-target="emergency-view">
+                    <span class="mr-3">🚨</span> Emergency Help
+                </a></li>
+                <li><a href="#" class="nav-item flex items-center p-3 rounded-lg" data-target="about-view">
+                    <span class="mr-3">👥</span> About Us
+                </a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6 overflow-y-auto">
+            
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="view-content">
+                <!-- Back to Main Page Button -->
+                <div class="flex items-center mb-6">
+                    <button onclick="window.location.href='/'" class="flex items-center text-gray-400 hover:text-white transition-colors mr-4">
+                        <span class="text-xl mr-2">🏠</span>
+                        <span>Back to Main Page</span>
+                    </button>
+                </div>
+                <h1 class="text-3xl font-bold mb-2">Welcome to LawHub</h1>
+                <p class="text-lg text-gray-400 mb-8">Your integrated legal companion with AI-powered assistance.</p>
+                
+
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="card p-6 rounded-xl cursor-pointer" data-target="chat-view" onclick="navigateTo('chat-view')">
+                        <div class="text-4xl mb-4">💬</div>
+                        <h3 class="text-xl font-bold mb-2">Ask Legal Questions</h3>
+                        <p class="text-gray-400">Get instant answers from our AI-powered legal assistant.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl cursor-pointer" data-target="laws-view" onclick="navigateTo('laws-view')">
+                        <div class="text-4xl mb-4">📚</div>
+                        <h3 class="text-xl font-bold mb-2">Explore Laws</h3>
+                        <p class="text-gray-400">Search through comprehensive legal databases.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl cursor-pointer" data-target="ocr-view" onclick="navigateTo('ocr-view')">
+                        <div class="text-4xl mb-4">📄</div>
+                        <h3 class="text-xl font-bold mb-2">Document Analysis</h3>
+                        <p class="text-gray-400">Upload and analyze legal documents.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl cursor-pointer" data-target="emergency-view" onclick="navigateTo('emergency-view')">
+                        <div class="text-4xl mb-4">🚨</div>
+                        <h3 class="text-xl font-bold mb-2">Emergency Help</h3>
+                        <p class="text-gray-400">Get immediate legal assistance.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legal Q&A View -->
+            <div id="chat-view" class="view-content hidden h-full flex flex-col">
+                <!-- Back Button -->
+                <div class="flex items-center mb-6">
+                    <button id="chat-back-btn" class="flex items-center text-gray-400 hover:text-white transition-colors mr-4" onclick="navigateTo('dashboard-view')">
+                        <span class="text-xl mr-2">←</span>
+                        <span>Back to Dashboard</span>
+                    </button>
+                </div>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h1 class="text-3xl font-bold mb-2">Legal Q&A Chatbot</h1>
+                        <p class="text-lg text-gray-400">Ask your legal question. I’ll answer from the Constitution PDF in simple English 🙂</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <label for="country-select" class="text-sm font-medium text-gray-300">Select Country:</label>
+                        <select id="country-select" class="bg-gray-800 border border-gray-600 text-white px-3 py-2 rounded-lg text-sm">
+                            <option value="India">India</option>
+                            <option value="Pakistan">Pakistan</option>
+                            <option value="USA">USA</option>
+                            <option value="Australia">Australia</option>
+                            <option value="Canada">Canada</option>
+                            <option value="UK">UK</option>
+                            <option value="Bhutan">Bhutan</option>
+                            <option value="Nepal">Nepal</option>
+                            <option value="New Zealand">New Zealand</option>
+                            <option value="Singapore">Singapore</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="chat-window" class="flex-1 bg-black/20 rounded-xl p-4 overflow-y-auto mb-4 space-y-4">
+                    <div class="flex justify-start">
+                        <div class="chat-bubble-bot p-3 rounded-lg max-w-lg">
+                            Hello! I am your AI legal assistant. How can I help you today?
+                        </div>
+                    </div>
+                </div>
+                <div id="chat-status" class="text-center text-sm text-gray-400 h-5 mb-2"></div>
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="chat-input" class="bg-gray-800 border border-gray-600 text-white flex-1 p-3 rounded-lg" placeholder="Type your question here...">
+                    <button id="send-btn" class="btn-primary p-3 rounded-lg">Send</button>
+                </div>
+            </div>
+
+            <!-- Laws Explorer View -->
+            <div id="laws-view" class="view-content hidden">
+                <!-- Back Button -->
+                <div class="flex items-center mb-6">
+                    <button id="laws-back-btn" class="flex items-center text-gray-400 hover:text-white transition-colors mr-4" onclick="navigateTo('dashboard-view')">
+                        <span class="text-xl mr-2">←</span>
+                        <span>Back to Dashboard</span>
+                    </button>
+                </div>
+                <h1 class="text-3xl font-bold mb-2">Laws Explorer</h1>
+                <p class="text-lg text-gray-400 mb-8">Search through legal databases from multiple jurisdictions.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Search Laws</h2>
+                        <div class="space-y-4">
+                            <input type="text" id="laws-search" class="bg-gray-800 border border-gray-600 text-white w-full p-3 rounded-lg" placeholder="Search for laws, regulations, or legal concepts...">
+                            <button id="search-laws-btn" class="btn-primary px-6 py-3 rounded-lg">Search</button>
+                        </div>
+                        <div id="laws-results" class="mt-6 space-y-4">
+                            <!-- Search results will appear here -->
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold mb-4">Legal Categories</h2>
+                        <div class="space-y-4 max-h-96 overflow-y-auto">
+                            <!-- Criminal Law -->
+                            <div class="card p-4 rounded-lg">
+                                <h3 class="font-semibold mb-2 text-red-400">⚖️ Criminal Law</h3>
+                                <div class="text-sm text-gray-400 space-y-1">
+                                    <div>• Crimes Against Persons (Homicide, Assault, Kidnapping)</div>
+                                    <div>• Crimes Against Property (Theft, Burglary, Arson)</div>
+                                    <div>• White-Collar Crimes (Fraud, Embezzlement)</div>
+                                    <div>• Public Order Crimes (Disorderly Conduct, Rioting)</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Civil Law -->
+                            <div class="card p-4 rounded-lg">
+                                <h3 class="font-semibold mb-2 text-blue-400">🏛️ Civil Law</h3>
+                                <div class="text-sm text-gray-400 space-y-1">
+                                    <div>• Contract Law (Formation, Breach, Remedies)</div>
+                                    <div>• Tort Law (Negligence, Defamation, Trespass)</div>
+                                    <div>• Property Law (Real Estate, Intellectual Property)</div>
+                                    <div>• Family Law (Marriage, Divorce, Custody)</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Constitutional Law -->
+                            <div class="card p-4 rounded-lg">
+                                <h3 class="font-semibold mb-2 text-green-400">📜 Constitutional Law</h3>
+                                <div class="text-sm text-gray-400 space-y-1">
+                                    <div>• Fundamental Rights & Freedoms</div>
+                                    <div>• Government Structure & Powers</div>
+                                    <div>• Judicial Review & Interpretation</div>
+                                    <div>• Constitutional Amendments</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Administrative Law -->
+                            <div class="card p-4 rounded-lg">
+                                <h3 class="font-semibold mb-2 text-yellow-400">🏢 Administrative Law</h3>
+                                <div class="text-sm text-gray-400 space-y-1">
+                                    <div>• Government Agency Regulations</div>
+                                    <div>• Administrative Procedures</div>
+                                    <div>• Judicial Review of Administrative Actions</div>
+                                    <div>• Licensing & Permits</div>
+                                </div>
+                            </div>
+                            
+                            <!-- International Law -->
+                            <div class="card p-4 rounded-lg">
+                                <h3 class="font-semibold mb-2 text-purple-400">🌍 International Law</h3>
+                                <div class="text-sm text-gray-400 space-y-1">
+                                    <div>• Public International Law (Treaties, Diplomacy)</div>
+                                    <div>• Private International Law (Conflict of Laws)</div>
+                                    <div>• International Human Rights Law</div>
+                                    <div>• International Trade Law</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Country-Specific Laws -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold mb-4">Country-Specific Legal Systems</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        
+                        <!-- India -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-orange-400">🇮🇳 India</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Indian Constitution, Fundamental Rights</div>
+                                <div><strong>Criminal Law:</strong> IPC, CrPC, Evidence Act</div>
+                                <div><strong>Civil Law:</strong> Contract Act, Property Law, Family Law</div>
+                                <div><strong>Special Laws:</strong> GST, Companies Act, Labor Laws</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pakistan -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-green-400">🇵🇰 Pakistan</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Pakistan Constitution, Islamic Law</div>
+                                <div><strong>Criminal Law:</strong> Pakistan Penal Code, Criminal Procedure</div>
+                                <div><strong>Civil Law:</strong> Contract Act, Property Law, Family Law</div>
+                                <div><strong>Special Laws:</strong> Anti-Terrorism Act, Banking Laws</div>
+                            </div>
+                        </div>
+                        
+                        <!-- USA -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-blue-400">🇺🇸 United States</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> US Constitution, Bill of Rights</div>
+                                <div><strong>Criminal Law:</strong> Federal & State Criminal Codes</div>
+                                <div><strong>Civil Law:</strong> Common Law, Tort Law, Contract Law</div>
+                                <div><strong>Special Laws:</strong> Securities Law, Tax Law, Immigration Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Australia -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-yellow-400">🇦🇺 Australia</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Australian Constitution, Federal System</div>
+                                <div><strong>Criminal Law:</strong> State & Territory Criminal Laws</div>
+                                <div><strong>Civil Law:</strong> Common Law, Equity, Statute Law</div>
+                                <div><strong>Special Laws:</strong> Corporations Act, Trade Practices Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Canada -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-red-400">🇨🇦 Canada</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Canadian Charter of Rights</div>
+                                <div><strong>Criminal Law:</strong> Criminal Code of Canada</div>
+                                <div><strong>Civil Law:</strong> Common Law (except Quebec), Civil Code</div>
+                                <div><strong>Special Laws:</strong> Immigration Law, Tax Law, Labor Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- UK -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-purple-400">🇬🇧 United Kingdom</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Unwritten Constitution, Parliamentary Sovereignty</div>
+                                <div><strong>Criminal Law:</strong> Common Law, Statute Law</div>
+                                <div><strong>Civil Law:</strong> Common Law, Equity, Statute Law</div>
+                                <div><strong>Special Laws:</strong> Companies Act, Employment Law, Tax Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bhutan -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-orange-400">🇧🇹 Bhutan</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Bhutan Constitution, Gross National Happiness</div>
+                                <div><strong>Criminal Law:</strong> Penal Code of Bhutan</div>
+                                <div><strong>Civil Law:</strong> Civil & Criminal Procedure Code</div>
+                                <div><strong>Special Laws:</strong> Land Law, Environmental Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Nepal -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-red-400">🇳🇵 Nepal</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Nepal Constitution, Federal System</div>
+                                <div><strong>Criminal Law:</strong> Muluki Ain (National Code)</div>
+                                <div><strong>Civil Law:</strong> Civil Code, Contract Law, Property Law</div>
+                                <div><strong>Special Laws:</strong> Labor Law, Tax Law, Banking Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- New Zealand -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-blue-400">🇳🇿 New Zealand</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Unwritten Constitution, Treaty of Waitangi</div>
+                                <div><strong>Criminal Law:</strong> Crimes Act, Criminal Procedure Act</div>
+                                <div><strong>Civil Law:</strong> Common Law, Statute Law, Equity</div>
+                                <div><strong>Special Laws:</strong> Resource Management Act, Employment Law</div>
+                            </div>
+                        </div>
+                        
+                        <!-- Singapore -->
+                        <div class="card p-6 rounded-lg">
+                            <h3 class="font-semibold mb-3 text-red-400">🇸🇬 Singapore</h3>
+                            <div class="text-sm text-gray-400 space-y-2">
+                                <div><strong>Constitutional Law:</strong> Singapore Constitution, Parliamentary Democracy</div>
+                                <div><strong>Criminal Law:</strong> Penal Code, Criminal Procedure Code</div>
+                                <div><strong>Civil Law:</strong> Common Law, Equity, Statute Law</div>
+                                <div><strong>Special Laws:</strong> Companies Act, Securities Law, Tax Law</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Analysis View -->
+            <div id="ocr-view" class="view-content hidden">
+                <!-- Back Button -->
+                <div class="flex items-center mb-6">
+                    <button id="ocr-back-btn" class="flex items-center text-gray-400 hover:text-white transition-colors mr-4" onclick="navigateTo('dashboard-view')">
+                        <span class="text-xl mr-2">←</span>
+                        <span>Back to Dashboard</span>
+                    </button>
+                </div>
+                <h1 class="text-3xl font-bold mb-2">Document Analysis</h1>
+                <p class="text-lg text-gray-400 mb-8">Upload legal documents for analysis and risk assessment.</p>
+                <div class="text-center">
+                    <button id="upload-doc-btn" class="btn-primary px-8 py-4 text-lg rounded-lg">
+                        Click to Upload Document 📄
+                    </button>
+                    <input id="doc-upload-input" type="file" class="hidden" accept=".pdf,.docx">
+                </div>
+                <div id="doc-analysis-results" class="mt-8 hidden">
+                    <h2 class="text-2xl font-bold mb-4">Analysis Report</h2>
+                    <div class="space-y-6">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold mb-2 text-amber-400">Extracted Text</h3>
+                            <p id="extracted-text" class="text-gray-300">Loading extracted text...</p>
+                        </div>
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-semibold mb-2 text-amber-400">Key Findings</h3>
+                            <p id="key-findings" class="text-gray-300">Generating summary...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Emergency Help View -->
+            <div id="emergency-view" class="view-content hidden">
+                <!-- Back Button -->
+                <div class="flex items-center mb-6">
+                    <button id="emergency-back-btn" class="flex items-center text-gray-400 hover:text-white transition-colors mr-4">
+                        <span class="text-xl mr-2">←</span>
+                        <span>Back</span>
+                    </button>
+                    <h1 class="text-3xl font-bold">🚨 Emergency Contacts</h1>
+                </div>
+                <p class="text-lg text-gray-400 mb-8">Emergency contact numbers for immediate assistance. Tap to call.</p>
+                
+                <!-- Country Selection -->
+                <div class="mb-8">
+                    <div class="flex flex-wrap gap-3">
+                        <button class="country-btn active px-4 py-2 rounded-lg bg-red-600 text-white" data-country="in">🇮🇳 India</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="pk">🇵🇰 Pakistan</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="us">🇺🇸 United States</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="au">🇦🇺 Australia</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="ca">🇨🇦 Canada</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="uk">🇬🇧 United Kingdom</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="bt">🇧🇹 Bhutan</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="np">🇳🇵 Nepal</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="nz">🇳🇿 New Zealand</button>
+                        <button class="country-btn px-4 py-2 rounded-lg bg-gray-700 text-white hover:bg-gray-600" data-country="sg">🇸🇬 Singapore</button>
+                    </div>
+                </div>
+
+                <!-- Emergency Contacts Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- India -->
+                    <div id="in-contacts" class="country-contacts">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇮🇳 India</h3>
+                            <div class="space-y-3">
+                                <a href="tel:100" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">100</span>
+                                </a>
+                                <a href="tel:102" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">102</span>
+                                </a>
+                                <a href="tel:101" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">101</span>
+                                </a>
+                                <a href="tel:+91-11-2419-8000" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Indian Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+91-11-2419-8000</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pakistan -->
+                    <div id="pk-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇵🇰 Pakistan</h3>
+                            <div class="space-y-3">
+                                <a href="tel:15" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">15</span>
+                                </a>
+                                <a href="tel:115" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">115</span>
+                                </a>
+                                <a href="tel:114" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">114</span>
+                                </a>
+                                <a href="tel:+92-51-920-2100" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Pakistan Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+92-51-920-2100</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- United States -->
+                    <div id="us-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇺🇸 United States</h3>
+                            <div class="space-y-3">
+                                <a href="tel:911" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">911</span>
+                                </a>
+                                <a href="tel:911" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">911</span>
+                                </a>
+                                <a href="tel:911" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">911</span>
+                                </a>
+                                <a href="tel:+1-202-501-4444" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ US Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+1-202-501-4444</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pakistan -->
+                    <div id="pk-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇵🇰 Pakistan</h3>
+                            <div class="space-y-3">
+                                <a href="tel:15" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">15</span>
+                                </a>
+                                <a href="tel:115" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">115</span>
+                                </a>
+                                <a href="tel:16" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">16</span>
+                                </a>
+                                <a href="tel:+92-51-201-4000" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Pakistan Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+92-51-201-4000</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Australia -->
+                    <div id="au-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇦🇺 Australia</h3>
+                            <div class="space-y-3">
+                                <a href="tel:000" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">000</span>
+                                </a>
+                                <a href="tel:000" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">000</span>
+                                </a>
+                                <a href="tel:000" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">000</span>
+                                </a>
+                                <a href="tel:+61-2-6214-0000" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Australian Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+61-2-6214-0000</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Canada -->
+                    <div id="ca-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇨🇦 Canada</h3>
+                            <div class="space-y-3">
+                                <a href="tel:911" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">911</span>
+                                </a>
+                                <a href="tel:911" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">911</span>
+                                </a>
+                                <a href="tel:911" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">911</span>
+                                </a>
+                                <a href="tel:+1-613-996-8885" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Canadian Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+1-613-996-8885</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- United Kingdom -->
+                    <div id="uk-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇬🇧 United Kingdom</h3>
+                            <div class="space-y-3">
+                                <a href="tel:999" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">999</span>
+                                </a>
+                                <a href="tel:999" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">999</span>
+                                </a>
+                                <a href="tel:999" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">999</span>
+                                </a>
+                                <a href="tel:+44-20-7008-1500" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ UK Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+44-20-7008-1500</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bhutan -->
+                    <div id="bt-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇧🇹 Bhutan</h3>
+                            <div class="space-y-3">
+                                <a href="tel:113" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">113</span>
+                                </a>
+                                <a href="tel:112" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">112</span>
+                                </a>
+                                <a href="tel:110" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">110</span>
+                                </a>
+                                <a href="tel:+975-2-322-225" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Bhutan Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+975-2-322-225</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Nepal -->
+                    <div id="np-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇳🇵 Nepal</h3>
+                            <div class="space-y-3">
+                                <a href="tel:100" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">100</span>
+                                </a>
+                                <a href="tel:102" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">102</span>
+                                </a>
+                                <a href="tel:101" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">101</span>
+                                </a>
+                                <a href="tel:+977-1-441-0583" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Nepal Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+977-1-441-0583</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Zealand -->
+                    <div id="nz-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇳🇿 New Zealand</h3>
+                            <div class="space-y-3">
+                                <a href="tel:111" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">111</span>
+                                </a>
+                                <a href="tel:111" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">111</span>
+                                </a>
+                                <a href="tel:111" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">111</span>
+                                </a>
+                                <a href="tel:+64-4-439-8000" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ New Zealand Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+64-4-439-8000</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Singapore -->
+                    <div id="sg-contacts" class="country-contacts hidden">
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4 text-red-400">🇸🇬 Singapore</h3>
+                            <div class="space-y-3">
+                                <a href="tel:999" class="emergency-contact flex items-center justify-between p-3 bg-red-900/20 rounded-lg hover:bg-red-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚔 Police Emergency</span>
+                                        <p class="text-sm text-gray-400">General Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-red-400">999</span>
+                                </a>
+                                <a href="tel:995" class="emergency-contact flex items-center justify-between p-3 bg-orange-900/20 rounded-lg hover:bg-orange-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚑 Ambulance</span>
+                                        <p class="text-sm text-gray-400">Medical Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-orange-400">995</span>
+                                </a>
+                                <a href="tel:995" class="emergency-contact flex items-center justify-between p-3 bg-yellow-900/20 rounded-lg hover:bg-yellow-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🚒 Fire Brigade</span>
+                                        <p class="text-sm text-gray-400">Fire Emergency</p>
+                                    </div>
+                                    <span class="font-bold text-yellow-400">995</span>
+                                </a>
+                                <a href="tel:+65-6471-1000" class="emergency-contact flex items-center justify-between p-3 bg-blue-900/20 rounded-lg hover:bg-blue-900/30 transition-colors cursor-pointer">
+                                    <div>
+                                        <span class="font-semibold">🏛️ Singapore Embassy</span>
+                                        <p class="text-sm text-gray-400">Consular Services</p>
+                                    </div>
+                                    <span class="font-bold text-blue-400">+65-6471-1000</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Legal Advice Section -->
+                <div class="mt-8">
+                    <h2 class="text-2xl font-bold mb-4">Quick Legal Advice</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <button class="btn-secondary w-full p-4 rounded-lg text-left">
+                            <span class="font-semibold">🚨 I've been arrested</span>
+                            <p class="text-sm text-gray-400 mt-1">Know your rights and next steps</p>
+                        </button>
+                        <button class="btn-secondary w-full p-4 rounded-lg text-left">
+                            <span class="font-semibold">⚖️ I need a lawyer</span>
+                            <p class="text-sm text-gray-400 mt-1">How to find legal representation</p>
+                        </button>
+                        <button class="btn-secondary w-full p-4 rounded-lg text-left">
+                            <span class="font-semibold">🏠 Domestic violence</span>
+                            <p class="text-sm text-gray-400 mt-1">Immediate safety and legal help</p>
+                        </button>
+                        <button class="btn-secondary w-full p-4 rounded-lg text-left">
+                            <span class="font-semibold">💼 Immigration issues</span>
+                            <p class="text-sm text-gray-400 mt-1">Visa and citizenship problems</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Us View -->
+            <div id="about-view" class="view-content hidden">
+                <!-- Back Button -->
+                <div class="flex items-center mb-6">
+                    <button id="about-back-btn" class="flex items-center text-gray-400 hover:text-white transition-colors mr-4" onclick="navigateTo('dashboard-view')">
+                        <span class="text-xl mr-2">←</span>
+                        <span>Back to Dashboard</span>
+                    </button>
+                    <h1 class="text-3xl font-bold">👥 About Us</h1>
+                </div>
+                <p class="text-lg text-gray-400 mb-8">Meet the talented team behind LawHub - Team Soul</p>
+                
+                <!-- Team Section -->
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold mb-6 text-center">🏆 Team Soul</h2>
+                    <p class="text-center text-gray-400 mb-8">Building the future of legal technology with AI-powered solutions</p>
+                </div>
+
+                <!-- Team Members Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                    <!-- Team Leader -->
+                    <div class="card p-6 rounded-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-20 h-20 rounded-full overflow-hidden mr-4 border-2 border-orange-400">
+                                <img src="/static/photos/japneet.jpg" alt="Japneet Singh Anand" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Japneet Singh Anand</h3>
+                                <p class="text-orange-400 font-semibold">Project Lead & AI Architect</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://www.linkedin.com/in/japneet-anand-60252b286?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="https://github.com/japneett007" target="_blank" class="flex items-center text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 2 -->
+                    <div class="card p-6 rounded-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-20 h-20 rounded-full overflow-hidden mr-4 border-2 border-purple-400">
+                                <img src="/static/photos/karamjass.jpg" alt="Karamjass Kaur" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Karamjass Kaur</h3>
+                                <p class="text-purple-400 font-semibold">Lead Developer & Backend Developer</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://www.linkedin.com/in/karamjass-kaur-145b30298?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="https://github.com/karamjass" target="_blank" class="flex items-center text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 3 -->
+                    <div class="card p-6 rounded-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-20 h-20 rounded-full overflow-hidden mr-4 border-2 border-green-400">
+                                <img src="/static/photos/niharika.jpg" alt="Niharika Jha" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Niharika Jha</h3>
+                                <p class="text-green-400 font-semibold">Frontend & UI/UX Designer</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://www.linkedin.com/in/niharikajha17/" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="https://github.com/Niharika-git-code" target="_blank" class="flex items-center text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Team Member 4 -->
+                    <div class="card p-6 rounded-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="w-20 h-20 rounded-full overflow-hidden mr-4 border-2 border-yellow-400">
+                                <img src="/static/photos/rituraj.jpg" alt="Rituraj Singh" class="w-full h-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold">Rituraj Singh</h3>
+                                <p class="text-yellow-400 font-semibold">Research Analyst</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <a href="https://www.linkedin.com/in/rituraj-kumar-0020761b8?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" class="flex items-center text-blue-400 hover:text-blue-300 transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                <span>LinkedIn</span>
+                            </a>
+                            <a href="https://github.com/Rituraj552003" target="_blank" class="flex items-center text-gray-400 hover:text-white transition-colors">
+                                <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                <span>GitHub</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Description -->
+                <div class="mt-12">
+                    <h2 class="text-2xl font-bold mb-6">🚀 About LawHub</h2>
+                    <div class="card p-6 rounded-xl">
+                        <p class="text-gray-300 mb-4">
+                            LawHub is an innovative legal AI platform that provides instant legal advice, document analysis, 
+                            and emergency contact information across multiple jurisdictions. Our mission is to make legal 
+                            information accessible to everyone, everywhere.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-400">10+</div>
+                                <div class="text-sm text-gray-400">Countries Supported</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-400">24/7</div>
+                                <div class="text-sm text-gray-400">AI Assistance</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-orange-400">100%</div>
+                                <div class="text-sm text-gray-400">Free Access</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+<script>
+// Simple navigation function - available immediately
+window.navigateTo = function(targetId) {
+    console.log('Navigating to:', targetId);
+    
+    // Hide all views
+    document.querySelectorAll('.view-content').forEach(view => {
+        view.classList.add('hidden');
+    });
+    
+    // Show target view
+    const targetView = document.getElementById(targetId);
+    if (targetView) {
+        targetView.classList.remove('hidden');
+        console.log('✅ View shown:', targetId);
+    } else {
+        console.error('❌ Target view not found:', targetId);
+        alert('View not found: ' + targetId);
+    }
+
+    // Update navigation active state
+    document.querySelectorAll('.nav-item').forEach(link => {
+        if (link.dataset.target === targetId) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up LawHub...');
+    
+    // Check for anchor links in URL
+    const hash = window.location.hash;
+    if (hash) {
+        const targetId = hash.substring(1) + '-view';
+        if (document.getElementById(targetId)) {
+            navigateTo(targetId);
+        }
+    }
+    
+    // Navigation
+    const navLinks = document.querySelectorAll('.nav-item');
+    const dashboardCards = document.querySelectorAll('.card[data-target]');
+    const views = document.querySelectorAll('.view-content');
+    
+    console.log('=== LAWHUB DEBUG ===');
+    console.log('navLinks found:', navLinks.length);
+    console.log('dashboardCards found:', dashboardCards.length);
+    console.log('views found:', views.length);
+    
+    // Test if elements exist
+    if (navLinks.length === 0) {
+        console.error('❌ No navigation links found!');
+        alert('Navigation links not found!');
+    }
+    if (dashboardCards.length === 0) {
+        console.error('❌ No dashboard cards found!');
+        alert('Dashboard cards not found!');
+    }
+    if (views.length === 0) {
+        console.error('❌ No views found!');
+        alert('Views not found!');
+    }
+    
+    // Test if specific views exist
+    const testViews = ['chat-view', 'laws-view', 'ocr-view', 'emergency-view'];
+    testViews.forEach(viewId => {
+        const view = document.getElementById(viewId);
+        if (view) {
+            console.log('✅ View found:', viewId);
+        } else {
+            console.error('❌ View not found:', viewId);
+        }
+    });
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            navigateTo(link.dataset.target);
+        });
+    });
+    
+    dashboardCards.forEach(card => {
+        console.log('Setting up click handler for card:', card.dataset.target);
+        
+        // Simple click handler
+        card.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Card clicked:', card.dataset.target);
+            navigateTo(card.dataset.target);
+        });
+        
+        // Add visual feedback
+        card.style.transition = 'all 0.3s ease';
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-2px)';
+            card.style.boxShadow = '0 10px 25px rgba(255, 153, 0, 0.2)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0)';
+            card.style.boxShadow = 'none';
+        });
+    });
+    
+    // Back button functionality
+    const chatBackBtn = document.getElementById('chat-back-btn');
+    const lawsBackBtn = document.getElementById('laws-back-btn');
+    const ocrBackBtn = document.getElementById('ocr-back-btn');
+    const emergencyBackBtn = document.getElementById('emergency-back-btn');
+    
+    console.log('Back buttons found:', {
+        chatBackBtn: !!chatBackBtn,
+        lawsBackBtn: !!lawsBackBtn,
+        ocrBackBtn: !!ocrBackBtn,
+        emergencyBackBtn: !!emergencyBackBtn
+    });
+
+    if (chatBackBtn) chatBackBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateTo('dashboard-view');
+    });
+    if (lawsBackBtn) lawsBackBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateTo('dashboard-view');
+    });
+    if (ocrBackBtn) ocrBackBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateTo('dashboard-view');
+    });
+    if (emergencyBackBtn) emergencyBackBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        navigateTo('dashboard-view');
+    });
+    
+    // Chat functionality
+    const chatWindow = document.getElementById('chat-window');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const chatStatus = document.getElementById('chat-status');
+
+    function addMessageToChat(message, sender) {
+        const bubble = document.createElement('div');
+        bubble.classList.add('flex', sender === 'user' ? 'justify-end' : 'justify-start');
+        
+        const content = document.createElement('div');
+        content.classList.add(sender === 'user' ? 'chat-bubble-user' : 'chat-bubble-bot', 'p-3', 'rounded-lg', 'max-w-lg');
+        content.textContent = message;
+        
+        bubble.appendChild(content);
+        chatWindow.appendChild(bubble);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    async function handleSendMessage() {
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
+
+        addMessageToChat(userMessage, 'user');
+        chatInput.value = '';
+        chatStatus.textContent = "LawHub is searching...";
+
+        try {
+            const response = await fetch('/api/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: userMessage, country: document.getElementById('country-select')?.value || '' })
+            });
+            const result = await response.json();
+            if (result.success && result.answer) {
+                addMessageToChat(result.answer, 'bot');
+            } else {
+                addMessageToChat("Sorry, I couldn't find a relevant legal answer.", 'bot');
+            }
+        } catch (error) {
+            addMessageToChat("An error occurred while connecting to the backend. Please try again later.", 'bot');
+            console.error("Error calling Flask API:", error);
+        } finally {
+            chatStatus.textContent = "";
+        }
+    }
+
+    sendBtn.addEventListener('click', handleSendMessage);
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            handleSendMessage();
+        }
+    });
+
+    // Removed Google Gemini option and country selection – simplified UI
+
+
+
+
+
+    // Laws search functionality
+    const lawsSearch = document.getElementById('laws-search');
+    const searchLawsBtn = document.getElementById('search-laws-btn');
+    const lawsResults = document.getElementById('laws-results');
+
+    async function searchLaws() {
+        const query = lawsSearch.value.trim();
+        if (!query) return;
+
+        lawsResults.innerHTML = '<p class="text-gray-400">Searching...</p>';
+
+        try {
+            const response = await fetch('/api/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: query })
+            });
+            const result = await response.json();
+            
+            if (Array.isArray(result) && result.length > 0) {
+                lawsResults.innerHTML = '';
+                result.forEach((res, idx) => {
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'card p-4 rounded-lg';
+                    resultDiv.innerHTML = `
+                        <h3 class="font-semibold mb-2">${res.dataset} (Score: ${res.score})</h3>
+                        <pre class="text-sm text-gray-300 overflow-auto">${JSON.stringify(res.result, null, 2)}</pre>
+                    `;
+                    lawsResults.appendChild(resultDiv);
+                });
+            } else {
+                lawsResults.innerHTML = '<p class="text-gray-400">No relevant laws found.</p>';
+            }
+        } catch (error) {
+            lawsResults.innerHTML = '<p class="text-red-400">Error searching laws.</p>';
+            console.error("Error searching laws:", error);
+        }
+    }
+
+    searchLawsBtn.addEventListener('click', searchLaws);
+    lawsSearch.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            searchLaws();
+        }
+    });
+
+    // Document analysis
+    const uploadDocBtn = document.getElementById('upload-doc-btn');
+    const docUploadInput = document.getElementById('doc-upload-input');
+    const docAnalysisResults = document.getElementById('doc-analysis-results');
+    const extractedTextElem = document.getElementById('extracted-text');
+    const keyFindingsElem = document.getElementById('key-findings');
+
+    uploadDocBtn.addEventListener('click', () => docUploadInput.click());
+    docUploadInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        docAnalysisResults.classList.remove('hidden');
+        extractedTextElem.textContent = "Extracting text...";
+        keyFindingsElem.textContent = "Generating summary...";
+
+        setTimeout(() => {
+            extractedTextElem.textContent = "Document text extracted successfully. This feature would integrate with OCR services for real document processing.";
+            keyFindingsElem.textContent = "Key legal terms and clauses identified. Summary generated based on document content.";
+        }, 2000);
+    });
+
+    // Emergency contacts functionality
+    const countryBtns = document.querySelectorAll('.country-btn');
+    const countryContacts = document.querySelectorAll('.country-contacts');
+
+    // Country selection
+    countryBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const country = btn.dataset.country;
+            
+            // Update button states
+            countryBtns.forEach(b => {
+                b.classList.remove('active', 'bg-red-600');
+                b.classList.add('bg-gray-700');
+            });
+            btn.classList.add('active', 'bg-red-600');
+            btn.classList.remove('bg-gray-700');
+            
+            // Show/hide country contacts
+            countryContacts.forEach(contact => {
+                contact.classList.add('hidden');
+            });
+            document.getElementById(`${country}-contacts`).classList.remove('hidden');
+        });
+    });
+
+
+
+    // Check backend status
+    fetch('/api/status')
+        .then(response => response.json())
+        .then(data => {
+            console.log('Backend status:', data);
+        })
+        .catch(error => {
+            console.error('Backend not available:', error);
+        });
+});
+</script>
+</body>
+</html> 
